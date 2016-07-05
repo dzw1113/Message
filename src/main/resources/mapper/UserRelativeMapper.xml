@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.UserRelativeMapper">
+	<resultMap id="UserRelativeMap" type="com.icip.framework.message.bean.UserRelative">
+		<result column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+		<result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+		<result column="MOBILE" property="mobile" jdbcType="VARCHAR" />
+		<result column="EMAIL" property="email" jdbcType="VARCHAR" />
+		<result column="QQ_NO" property="qqNo" jdbcType="VARCHAR" />
+		<result column="WECHAT_NO" property="wechatNo" jdbcType="VARCHAR" />
+		<result column="WEI_BO_NO" property="weiBoNo" jdbcType="VARCHAR" />
+		<result column="AURORA_NO" property="auroraNo" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="AllColumn">
+		CUST_NO, PRODUCT_ID, MOBILE, EMAIL, QQ_NO, WECHAT_NO, WEI_BO_NO,
+		AURORA_NO
+	</sql>
+	<sql id="BaseWhere">
+		<where>
+			<if test="custNo != null">
+				and CUST_NO = #{custNo,jdbcType=VARCHAR}
+			</if>
+			<if test="productId != null">
+				and PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+			</if>
+			<if test="mobile != null">
+				and MOBILE = #{mobile,jdbcType=VARCHAR}
+			</if>
+			<if test="email != null">
+				and EMAIL = #{email,jdbcType=VARCHAR}
+			</if>
+			<if test="qqNo != null">
+				and QQ_NO = #{qqNo,jdbcType=VARCHAR}
+			</if>
+			<if test="wechatNo != null">
+				and WECHAT_NO = #{wechatNo,jdbcType=VARCHAR}
+			</if>
+			<if test="weiBoNo != null">
+				and WEI_BO_NO = #{weiBoNo,jdbcType=VARCHAR}
+			</if>
+			<if test="auroraNo != null">
+				and AURORA_NO = #{auroraNo,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</sql>
+	<select id="selectByKey" resultMap="UserRelativeMap"
+		parameterType="com.icip.framework.message.bean.UserRelativeKey">
+		select
+		<include refid="AllColumn" />
+		from user_relative
+		where CUST_NO = #{custNo,jdbcType=VARCHAR}
+		and PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectAll" resultMap="UserRelativeMap"
+		parameterType="map">
+		select
+		<include refid="AllColumn" />
+		from user_relative
+		<include refid="BaseWhere" />
+	</select>
+	<delete id="delete" parameterType="com.icip.framework.message.bean.UserRelativeKey">
+		delete from user_relative
+		where CUST_NO = #{custNo,jdbcType=VARCHAR}
+		and PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.icip.framework.message.bean.UserRelative">
+		insert into user_relative (CUST_NO, PRODUCT_ID, MOBILE,
+		EMAIL, QQ_NO, WECHAT_NO, WEI_BO_NO,
+		AURORA_NO)
+		values (#{custNo,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
+		#{mobile,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR}, #{qqNo,jdbcType=VARCHAR}, #{wechatNo,jdbcType=VARCHAR},
+		#{weiBoNo,jdbcType=VARCHAR},
+		#{auroraNo,jdbcType=VARCHAR})
+	</insert>
+	<update id="update" parameterType="com.icip.framework.message.bean.UserRelative">
+		update user_relative
+		<set>
+			<if test="custNo != null">
+				CUST_NO = #{custNo,jdbcType=VARCHAR},
+			</if>
+			<if test="productId != null">
+				PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+			</if>
+			<if test="mobile != null">
+				MOBILE = #{mobile,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null">
+				EMAIL = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="qqNo != null">
+				QQ_NO = #{qqNo,jdbcType=VARCHAR},
+			</if>
+			<if test="wechatNo != null">
+				WECHAT_NO = #{wechatNo,jdbcType=VARCHAR},
+			</if>
+			<if test="weiBoNo != null">
+				WEI_BO_NO = #{weiBoNo,jdbcType=VARCHAR},
+			</if>
+			<if test="auroraNo != null">
+				AURORA_NO = #{auroraNo,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where CUST_NO = #{custNo,jdbcType=VARCHAR}
+		and PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+	</update>
+
+	<select id="selectByCustNos" resultMap="UserRelativeMap"
+		parameterType="map">
+		select
+		<include refid="AllColumn" />
+		from user_relative a
+		where 1=1
+		<if test="custNos != null">
+			AND a.CUST_NO in
+			<foreach item="item" index="index" collection="custNos" open="("
+				separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="productId != null and productId != '00'">
+			AND a.PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+		</if>
+		<if test="cids != null">
+			AND a.CUST_NO in (select b.CUST_NO from user_relative_pds b where
+			b.cid in
+			<foreach item="item" index="index" collection="cids" open="("
+				separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+			)
+		</if>
+		<if test="pcids != null">
+			AND a.CUST_NO in (select b.CUST_NO from user_relative_pds b where
+			b.pcid in
+			<foreach item="item" collection="pcids" open="(" separator=","
+				close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+			)
+		</if>
+
+		<if test="groupType != null and groupType == 1">
+			GROUP BY a.EMAIL
+		</if>
+		<if test="groupType != null and groupType == 2">
+			GROUP BY a.MOBILE
+		</if>
+		<if test="groupType != null and groupType == 3">
+			GROUP BY a.AURORA_NO
+		</if>
+		<if test="groupType != null and groupType == 4">
+			GROUP BY a.WECHAT_NO
+		</if>
+	</select>
+
+
+	<select id="selectByInfo" resultType="int" parameterType="map">
+		select
+		count(*) as ct
+		from user_relative a
+		where 1=1
+		<if test="custNos != null">
+			AND a.CUST_NO in
+			<foreach item="item" index="index" collection="custNos" open="("
+				separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+		</if>
+		<if test="productId != null and productId != '00'">
+			AND a.PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+		</if>
+		<if test="cids != null">
+			AND a.CUST_NO in (select b.CUST_NO from user_relative_pds b where
+			b.cid in
+			<foreach item="item" index="index" collection="cids" open="("
+				separator="," close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+			)
+		</if>
+		<if test="pcids != null">
+			AND a.CUST_NO in (select b.CUST_NO from user_relative_pds b where
+			b.pcid in
+			<foreach item="item" collection="pcids" open="(" separator=","
+				close=")">
+				#{item,jdbcType=VARCHAR}
+			</foreach>
+			)
+		</if>
+	</select>
+
+</mapper>

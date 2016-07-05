@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<!-- 配置mysql 驱动jar包路径.用了绝对路径 -->
+	<classPathEntry
+		location="E:\apache-maven-3.3.3\jar\mysql\mysql-connector-java\5.1.22\mysql-connector-java-5.1.22.jar" />
+
+	<context id="icip_mysql_table" targetRuntime="MyBatis3">
+		<!-- 为了防止生成的代码中有很多注释，比较难看，加入下面的配置控制 -->
+		<commentGenerator>
+			<property name="suppressAllComments" value="true" />
+			<property name="suppressDate" value="true" />
+		</commentGenerator>
+		<!-- 注释控制完毕 -->
+
+		<!-- 数据库连接 -->
+		<jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://112.74.65.244:3306/me?characterEncoding=UTF-8"
+			userId="root" password="YWjishubu2015">
+		</jdbcConnection>
+
+		<javaTypeResolver>
+			<property name="forceBigDecimals" value="false" />
+		</javaTypeResolver>
+
+		<!-- 数据表对应的model 层 -->
+		<javaModelGenerator targetPackage="com.icip.framework.message.bean"
+			targetProject="src/main/java">
+			<!-- enableSubPackages:是否让schema作为包的后缀 -->
+			<property name="enableSubPackages" value="true" />
+			<property name="trimStrings" value="true" />
+		</javaModelGenerator>
+
+		<!-- sql mapper 隐射配置文件 -->
+		<sqlMapGenerator targetPackage="mapper"
+			targetProject="src/main/resources">
+			<property name="enableSubPackages" value="true" />
+		</sqlMapGenerator>
+
+		<!-- 在ibatis2 中是dao层，但在mybatis3中，其实就是mapper接口 -->
+		<javaClientGenerator type="XMLMAPPER"
+			targetPackage="com.icip.framework.message.dao" targetProject="src/main/java">
+			<!-- 从数据库返回的值被清理前后的空格 -->
+			<property name="enableSubPackages" value="true" />
+		</javaClientGenerator>
+
+		<!-- 要对那些数据表进行生成操作，必须要有一个. -->
+<!-- 		<table schema="mybatis" tableName="SYS_COMPANY_INFO"></table> -->
+<!-- 		<table schema="mybatis" tableName="SYS_SEND_CONTROL"></table> -->
+<!-- 		<table schema="mybatis" tableName="SYS_SEND_LOG"></table> -->
+
+		<table schema="mybatis" tableName="user_relative"></table>
+
+	</context>
+</generatorConfiguration>

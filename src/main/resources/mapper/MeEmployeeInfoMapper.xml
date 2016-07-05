@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.MeEmployeeInfoMapper" >
+  <resultMap id="MeEmployeeInfoMap" type="com.icip.framework.message.bean.MeEmployeeInfo" >
+    <id column="PCID" property="pcid" jdbcType="VARCHAR" />
+    <id column="CUST_NO" property="custNo" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="AllColumn" >
+    PCID, CUST_NO, STATUS
+  </sql>
+  <sql id="BaseWhere" >
+    <where >
+      <if test="pcid != null" >
+         and PCID = #{pcid,jdbcType=VARCHAR}
+      </if>
+      <if test="custNo != null" >
+         and CUST_NO = #{custNo,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+         and STATUS = #{status,jdbcType=CHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="selectAll" resultType="map" parameterType="map" >
+    SELECT DISTINCT A.PCID,A.CUST_NO,A.STATUS,B.`COMPANY_NAME`,C.`MOBILE` 
+    FROM me_employee_info a,sys_company_info b,user_relative C 
+		WHERE A.`PCID` = B.`COMPANY_ID`
+		AND C.`CUST_NO` = A.`CUST_NO`
+	AND A.PCID = #{pcid,jdbcType=VARCHAR}
+	AND C.MOBILE IS NOT NULL
+	; 	
+  </select>
+  <update id="update" parameterType="com.icip.framework.message.bean.MeEmployeeInfo" >
+    update me_employee_info
+    <set >
+      <if test="pcid != null" >
+        PCID = #{pcid,jdbcType=VARCHAR},
+      </if>
+      <if test="custNo != null" >
+        CUST_NO = #{custNo,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where PCID = #{pcid,jdbcType=VARCHAR}
+  </update>
+</mapper>

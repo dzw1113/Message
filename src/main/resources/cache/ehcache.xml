@@ -1,0 +1,108 @@
+<ehcache updateCheck="false" name="ME">
+	<!-- 
+	开启terracotta集群模式
+	<terracottaConfig url="192.168.1.100:9510,192.168.1.131:9510" rejoin="true" wanEnabledTSA="true" /> 
+	 -->
+	<!-- Sets the path to the directory where cache .data files are created. 
+		If the path is a Java System Property it is replaced by its value in the 
+		running VM. The following properties are translated: 
+		user.home - User's home directory 
+		user.dir - User's current working directory 
+		java.io.tmpdir - Default temp file path -->
+	<diskStore path="java.io.tmpdir" />
+
+
+	<!--Default Cache configuration. These will applied to caches programmatically 
+		created through the CacheManager. The following attributes are required: 
+		maxElementsInMemory - Sets the maximum number of objects that will be created 
+		in memory eternal（永恒） - Sets whether elements are eternal. If eternal, timeouts 
+		are ignored and the element is never expired（过期）. overflowToDisk - Sets whether 
+		elements can overflow to disk when the in-memory cache has reached the maxInMemory 
+		limit. The following attributes are optional: timeToIdleSeconds - Sets the 
+		time to idle for an element before it expires. i.e. The maximum amount of 
+		time between accesses before an element expires Is only used if the element 
+		is not eternal. Optional attribute. A value of 0 means that an Element can 
+		idle for infinity. The default value is 0. timeToLiveSeconds - Sets the time 
+		to live for an element before it expires. i.e. The maximum time between creation 
+		time and when an element expires. Is only used if the element is not eternal. 
+		Optional attribute. A value of 0 means that and Element can live for infinity. 
+		The default value is 0. diskPersistent - Whether the disk store persists 
+		between restarts of the Virtual Machine. The default value is false. diskExpiryThreadIntervalSeconds- 
+		The number of seconds between runs of the disk expiry thread. The default 
+		value is 120 seconds. -->
+
+
+	<!-- maxElementsInMemory设定内存中创建对象的最大值 -->
+	<!-- eternal设置元素（译注：内存中对象）是否永久驻留。如果是，将忽略超 时限制且元素永不消亡。 -->
+	<!-- overflowToDisk设置当内存中缓存达到 maxInMemory 限制时元素是否可写到磁盘上 -->
+	<!-- timeToIdleSeconds设置某个元素消亡前的停顿时间。 也就是在一个元素消亡之前，两次访问时间的最大时间间隔值。 这只能在元素不是永久驻留时有效（译注：如果对象永恒不灭，则 
+		设置该属性也无用）。 如果该值是 0 就意味着元素可以停顿无穷长的时间。 -->
+	<!-- timeToLiveSeconds为元素设置消亡前的生存时间。 也就是一个元素从构建到消亡的最大时间间隔值。 这只能在元素不是永久驻留时有效。 -->
+	<!-- diskPersistent是否disk store在虚拟机启动时持久化。默认为false -->
+	<!-- diskExpiryThreadIntervalSeconds运行disk终结线程的时间，默认为120秒 -->
+
+	<!-- maxElementsInMemory="10000" -->
+	<!-- maxBytesLocalOffHeap="10G" 企业版支持 -->
+	<!-- 默认缓存实例，通过CacheManager新增的Cache实例将以此参数为模板创建 -->
+	<defaultCache eternal="false" overflowToDisk="true" memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="300" timeToLiveSeconds="0" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="120" maxBytesLocalHeap="50M" />
+	<!-- 索引缓存区 -->
+	<cache name="indexCache"  eternal="true" overflowToDisk="true" timeToIdleSeconds="0" maxBytesLocalHeap="10M">
+		<!-- 
+		启用用集群功能
+		<terracotta/>
+		 -->
+	</cache>
+	<!-- 用户缓存信息-->
+	<cache name="userCache" eternal="false" overflowToDisk="false" memoryStoreEvictionPolicy="LRU"
+		timeToIdleSeconds="1296000" timeToLiveSeconds="1296000" diskPersistent="false" maxBytesLocalHeap="100M">
+		<!-- 启用查询功能 -->
+		<searchable allowDynamicIndexing="true" />		
+		<!-- 启动自动加载操作,需要定义CacheLoader具体的实现类		
+		 <cacheLoaderFactory class="com.xx.accountCacheLoader" /> 
+		-->
+		<!-- 
+		启用用集群功能
+		<terracotta/>
+		 -->
+	</cache>
+	<!-- 系统缓存区 -->
+	<cache name="systemCache"  eternal="true" overflowToDisk="false" timeToIdleSeconds="0" maxBytesLocalHeap="100M">
+		<!-- 启用查询功能 -->
+		<searchable allowDynamicIndexing="true"/>
+		<!-- 启动自动加载操作,需要定义CacheLoader具体的实现类
+		 <cacheLoaderFactory class="com.xx.userCacheLoader" /> 
+		 <cacheLoaderFactory class="com.xx.accountCacheLoader" /> 
+		-->
+		<!-- 
+		启用用集群功能
+		<terracotta/>
+		 -->
+	</cache>
+	<!-- 服务缓存区 -->
+	<cache name="serviceCache" eternal="false"  overflowToDisk="false" memoryStoreEvictionPolicy="LRU"
+		timeToIdleSeconds="600" timeToLiveSeconds="1800" diskPersistent="false" maxBytesLocalHeap="100M">
+		<!-- 启用查询功能 -->
+		<searchable allowDynamicIndexing="true" />
+		<!-- 监听交易对象的失效等事件
+		<cacheEventListenerFactory class="com.xxx.CacheEventHandlerImp" />
+		 -->
+		<!-- 启动自动加载操作,需要定义CacheLoader具体的实现类
+		 <cacheLoaderFactory class="com.xx.userCacheLoader" /> 
+		 <cacheLoaderFactory class="com.xx.accountCacheLoader" /> 
+		-->
+		<!-- 
+		启用用集群功能
+		<terracotta/>
+		 -->
+	</cache>
+	<!-- 临时缓存区 -->
+	<cache name="tempCache" eternal="false" overflowToDisk="true" memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="300" timeToLiveSeconds="300" diskPersistent="false" diskExpiryThreadIntervalSeconds="120" maxBytesLocalHeap="50M" >		
+	</cache>
+	<!-- 大数据缓存区 -->
+	<cache name="bigdataCache"  eternal="false"  overflowToDisk="true" diskPersistent="true"
+		memoryStoreEvictionPolicy="LFU" timeToIdleSeconds="300" timeToLiveSeconds="300"	maxBytesLocalHeap="100M">		
+	</cache>
+</ehcache>  

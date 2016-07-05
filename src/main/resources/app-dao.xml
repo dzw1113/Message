@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+	<!-- 资源访问统一入库 -->
+	<bean class="com.icip.framework.source.SourceAccessUtil">
+		<property name="factorySet">
+			<set>
+				<ref bean="dBManagerFactory" />
+			</set>
+		</property>
+	</bean>
+
+	<!-- 数据源配置 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${dataSource.driverClassName}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="classpath:sql.cfg.xml" />
+		<property name="mapperLocations">
+			<list>
+				<!-- 配置MyBaties影射文件 -->
+				<value>classpath*:/mapper/*Mapper.xml</value>
+				<value>classpath:/mapper/sys/*Mapper.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.icip.framework.common.dao,com.icip.framework.*.dao" />
+	</bean>
+
+	<!-- 初始化DBContext上下文 -->
+	<bean class="com.icip.framework.source.db.context.DBContext">
+		<!-- 定义执行sql的实现接口路径，需要为其定义事务 -->
+		<constructor-arg type="java.lang.String"
+			value="com.icip.framework.sys.listener.SqlExecuteDao" />
+	</bean>
+
+	<bean id="dBManagerFactory" class="com.icip.framework.source.SourceManagerFactory">
+		<property name="sourceType">
+			<bean class="com.icip.framework.source.pub.SourceType"
+				factory-method="valueOf">
+				<constructor-arg>
+					<value>DataBase</value>
+				</constructor-arg>
+			</bean>
+		</property>
+		<property name="managerList">
+			<list><!-- 按先后顺序执行 -->
+				<bean class="com.icip.framework.source.db.manager.DBParamsManagerImpl"></bean>
+				<bean class="com.icip.framework.source.db.manager.DBConnManagerImpl"></bean>
+				<bean class="com.icip.framework.source.db.manager.DBExchangeManagerImpl"></bean>
+				<bean class="com.icip.framework.source.db.manager.DBResultManagerImpl"></bean>
+			</list>
+		</property>
+	</bean>
+
+
+
+	<!-- 配置SFTP服务器信息 01 -->
+
+
+	<bean class="com.icip.service.MessageService"/>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 定义Aspect -->
+	<!-- proxy-target-class=true 基于cglib expose-proxy=true 注解方式 -->
+	<!-- <aop:aspectj-autoproxy expose-proxy="true" -->
+	<!-- proxy-target-class="true" /> -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+
+</beans>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configs>
+
+	<config name="sysPara" cacheName="systemCache"
+		daoInterface="com.icip.framework.common.dao.SysParaDao" primaryKey="paramCode"
+		timeToIdleSeconds="0" timeToLiveSeconds="0" method="selectAll" />
+			
+</configs>
+

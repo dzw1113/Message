@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- 初始化容器对象 -->
+	<bean class="com.icip.framework.common.ApplicationContextUtil" />
+	<!-- spring上下文,可以获取 上下文的Context -->
+	<bean class="com.icip.framework.common.AppUtil" />
+	
+
+</beans>

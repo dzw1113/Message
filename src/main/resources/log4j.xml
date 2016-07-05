@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="com.icip.framework.sys.log.CustomPatternLayout">
+			<param name="ConversionPattern"
+				value="[%X{companyID}] %p %-d{yyyy-MM-dd HH:mm:ss} [%t] %c{1}.%M(%L) | %m%n" />
+		</layout>
+	</appender>
+	<!-- 文件日志 -->
+
+<!-- 	<appender name="APPLOGFILE" -->
+<!-- 		class="com.icip.framework.sys.log.CustomRollingFileAppender"> -->
+<!-- 		<param name="encoding" value="UTF-8" /> -->
+<!-- 		<param name="File" value="../log/me/me.log" /> -->
+<!-- 		<param name="DatePattern" value="'.'yyyy-MM-dd-HH" /> -->
+<!-- 		<param name="Append" value="true" /> -->
+<!-- 		<layout class="com.icip.framework.sys.log.CustomPatternLayout"> -->
+<!-- 			<param name="ConversionPattern" -->
+<!-- 				value="[%X{companyID}] %p %-d{yyyy-MM-dd HH:mm:ss} [%t] %c{1}.%M(%L) | %m%n" /> -->
+<!-- 		</layout> -->
+<!-- 	</appender> -->
+	
+	<appender name="APPLOGFILE"   
+        class="org.apache.log4j.RollingFileAppender">  
+        <param name="File" value="/mnt/logs/ME/ME.log"></param>  
+        <param name="ImmediateFlush" value="true"/>  
+        <param name="Append" value="true"></param>  
+        <param name="MaxFileSize" value="30MB"></param>  
+        <param name="MaxBackupIndex" value="100"></param>  
+        <layout class="org.apache.log4j.PatternLayout">  
+            <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss\} %-5p] [%t] {%c:%L}-%m%n"></param>  
+        </layout>  
+    </appender>
+
+
+
+
+	<!-- 系统日志 -->
+<!-- 	<appender name="DATABASE_ERROR" class="com.icip.framework.sys.log.Log4jDataBaseAppender"> -->
+<!-- 		<filter class="org.apache.log4j.varia.LevelRangeFilter"> -->
+<!-- 			<param name="levelMin" value="ERROR" /> -->
+<!-- 		</filter> -->
+<!-- 	</appender> -->
+
+	<!-- 行为日志 -->
+<!-- 	<appender name="DATABASE_ACTION" -->
+<!-- 		class="com.icip.framework.sys.log.ActionDataBaseAppender"> -->
+<!-- 		<filter class="com.icip.framework.sys.log.ActionFilter"> -->
+<!-- 			<param name="levelMin" value="CHARGE" /> -->
+<!-- 			<param name="levelMax" value="CHARGE" /> -->
+<!-- 			<param name="AcceptOnMatch" value="true" /> -->
+<!-- 		</filter> -->
+<!-- 	</appender> -->
+
+
+	<category name="java.sql">
+		<priority value="debug" />
+	</category>
+	<category name="com.ibatis">
+		<priority value="debug" />
+	</category>
+	<category name="com.icip">
+		<priority value="debug" />
+	</category>
+	<logger name="org.apache.commons">
+		<level value="ERROR" />
+	</logger>
+	<logger name="org.springframework">
+		<level value="ERROR" />
+	</logger>
+	<logger name="net.sf.ehcache.store">
+		<level value="ERROR" />
+	</logger>
+	<logger name="redis.clients.jedis">
+		<level value="ERROR" />
+	</logger>
+	<logger name="com.atomikos">
+		<level value="ERROR" />
+	</logger>
+	<logger name="org.apache.ibatis">
+		<level value="ERROR" />
+	</logger>
+	
+	
+	<root>
+		<level value="DEBUG" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="APPLOGFILE" />
+<!-- 		<appender-ref ref="DATABASE_ERROR" /> -->
+<!-- 		<appender-ref ref="DATABASE_ACTION" /> -->
+	</root>
+</log4j:configuration>

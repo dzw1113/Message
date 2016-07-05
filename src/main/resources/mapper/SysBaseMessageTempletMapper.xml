@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.SysBaseMessageTempletMapper" >
+  <resultMap id="SysBaseMessageTempletMap" type="com.icip.framework.message.bean.SysBaseMessageTemplet" >
+    <id column="BMT_CODE" property="bmtCode" jdbcType="VARCHAR" />
+    <result column="BMT_TYPE" property="bmtType" jdbcType="VARCHAR" />
+    <result column="BMT_TITLE" property="bmtTitle" jdbcType="VARCHAR" />
+    <result column="BMT_CONTENT" property="bmtContent" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="VARCHAR" />
+    <result column="STATE" property="state" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="AllColumn" >
+    BMT_CODE, BMT_TYPE, BMT_TITLE, BMT_CONTENT, UPDATE_TIME, STATE
+  </sql>
+  <sql id="BaseWhere" >
+    <where >
+      <if test="bmtCode != null" >
+         and BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+      </if>
+      <if test="bmtType != null" >
+         and BMT_TYPE = #{bmtType,jdbcType=VARCHAR}
+      </if>
+      <if test="bmtTitle != null" >
+         and BMT_TITLE = #{bmtTitle,jdbcType=VARCHAR}
+      </if>
+      <if test="bmtContent != null" >
+         and BMT_CONTENT = #{bmtContent,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null" >
+         and UPDATE_TIME = #{updateTime,jdbcType=VARCHAR}
+      </if>
+      <if test="state != null" >
+         and STATE = #{state,jdbcType=CHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="selectByKey" resultMap="SysBaseMessageTempletMap" parameterType="java.lang.String" >
+    select 
+    <include refid="AllColumn" />
+    from SYS_BASE_MESSAGE_TEMPLET
+    where BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="SysBaseMessageTempletMap" parameterType="map" >
+    select 
+    <include refid="AllColumn" />
+    from SYS_BASE_MESSAGE_TEMPLET
+    <include refid="BaseWhere" />
+  </select>
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from SYS_BASE_MESSAGE_TEMPLET
+    where BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.icip.framework.message.bean.SysBaseMessageTemplet" >
+    insert into SYS_BASE_MESSAGE_TEMPLET (BMT_CODE, BMT_TYPE, BMT_TITLE, 
+      BMT_CONTENT, UPDATE_TIME, STATE
+      )
+    values (#{bmtCode,jdbcType=VARCHAR}, #{bmtType,jdbcType=VARCHAR}, #{bmtTitle,jdbcType=VARCHAR}, 
+      #{bmtContent,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}
+      )
+  </insert>
+  <update id="update" parameterType="com.icip.framework.message.bean.SysBaseMessageTemplet" >
+    update SYS_BASE_MESSAGE_TEMPLET
+    <set >
+      <if test="bmtCode != null" >
+        BMT_CODE = #{bmtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="bmtType != null" >
+        BMT_TYPE = #{bmtType,jdbcType=VARCHAR},
+      </if>
+      <if test="bmtTitle != null" >
+        BMT_TITLE = #{bmtTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="bmtContent != null" >
+        BMT_CONTENT = #{bmtContent,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=CHAR},
+      </if>
+    </set>
+    where BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

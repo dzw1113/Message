@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 管理类：配置Schedule信息，与spring容器的生命周期建立联系等功能 -->
+	<bean id="scheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"
+		lazy-init="false" destroy-method="destroy">
+		<!-- 是否自动启动，该Bean被初始化后是否自动启动定时任务 -->
+		<property name="autoStartup" value="true" />
+		<property name="waitForJobsToCompleteOnShutdown" value="false" />
+		<property name="dataSource" ref="dataSource" />
+		<!-- 如果这个覆盖配置为false，quratz启动以后将以数据库的数据为准，配置文件的修改不起作用 -->
+		<property name="overwriteExistingJobs" value="true" />
+		<!-- 在SchedulerFactoryBean初始化完成后，延迟300秒启动Scheduler，以便让Spring能够更快初始化容器中剩余的Bean。 -->
+		<property name="startupDelay" value="60"></property>
+		<property name="jobFactory">
+			<bean class="org.quartz.simpl.SimpleJobFactory"></bean>
+		</property>
+		<property name="quartzProperties">
+			<props>
+				<!-- 调度标识名 集群中每一个实例都必须使用相同的名称 -->
+				<prop key="org.quartz.scheduler.instanceName">ClusteredScheduler</prop>
+				<!-- ID设置为自动获取 每一个必须不同 -->
+				<prop key="org.quartz.scheduler.instanceId">AUTO</prop>
+				<prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
+				<!-- ThreadPool 实现的类名 -->
+				<prop key="org.quartz.threadPool.class">org.quartz.simpl.SimpleThreadPool</prop>
+				<!-- 线程数量 -->
+				<prop key="org.quartz.threadPool.threadCount">5</prop>
+				<!-- 线程优先级 -->
+				<prop key="org.quartz.threadPool.threadPriority">5</prop>
+				<!-- 数据保存方式为持久化 -->
+				<prop key="org.quartz.jobStore.class">org.quartz.impl.jdbcjobstore.JobStoreTX</prop>
+				<prop key="org.quartz.jobStore.driverDelegateClass">org.quartz.impl.jdbcjobstore.StdJDBCDelegate</prop>
+				<!-- 容许的最大作业延长时间 -->
+				<prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
+				<!-- 设置为TRUE不会出现序列化非字符串类到 BLOB 时产生的类版本问题 -->
+				<prop key="org.quartz.jobStore.useProperties">false</prop>
+				<prop key="org.quartz.jobStore.tablePrefix">QRTZ_</prop>
+				<!-- 加入集群 -->
+				<prop key="org.quartz.jobStore.isClustered">true</prop>
+				<!-- 调度实例失效的检查时间间隔 -->
+				<prop key="org.quartz.jobStore.clusterCheckinInterval">20000</prop>
+
+				<prop key="org.quartz.scheduler.classLoadHelper.class">org.quartz.simpl.CascadingClassLoadHelper</prop>
+				<prop key="org.quartz.jobStore.lockHandler.class">org.quartz.impl.jdbcjobstore.UpdateLockRowSemaphore
+				</prop>
+				<prop key="org.quartz.jobStore.lockHandler.updateLockRowSQL">UPDATE QRTZ_LOCKS SET LOCK_NAME = LOCK_NAME WHERE
+					LOCK_NAME = ?
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+</beans>

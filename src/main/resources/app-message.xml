@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- 辅助类 -->
+	<bean id="configService" class="com.icip.framework.message.ConfigService" />
+
+	<bean id="smsSenderAdapter" class="com.icip.framework.message.adapter.SmsSenderAdapter" />
+	<bean id="mailSenderAdapter" class="com.icip.framework.message.adapter.MailSenderAdapter" />
+	<bean id="pushSenderAdapter" class="com.icip.framework.message.adapter.PushSenderAdapter" />
+	<bean id="wxSenderAdapter" class="com.icip.framework.message.adapter.WxSenderAdapter" />
+	<bean id="senderFactory" class="com.icip.framework.message.send.SenderFactory" />
+
+	<!-- 公共调用入口 -->
+	<bean id="messageService" class="com.icip.framework.message.impl.MessageServiceImpl">
+		<property name="senderFactory" ref="senderFactory"></property>
+		<property name="sysBaseMessageTempletMapper" ref="sysBaseMessageTempletMapper"></property>
+	</bean>
+
+	<!-- 推送入口 -->
+	<bean id="pushSender" class="com.icip.framework.message.impl.PushSenderImpl">
+		<property name="configService" ref="configService"></property>
+	</bean>
+
+	<!-- 邮箱入口 -->
+	<bean id="emailSender" class="com.icip.framework.message.impl.EmailSenderImpl">
+		<property name="configService" ref="configService"></property>
+	</bean>
+
+	<!-- 短信入口 -->
+	<bean id="smsSender" class="com.icip.framework.message.impl.SmsSenderImpl">
+		<property name="configService" ref="configService"></property>
+	</bean>
+	
+	<bean id="wxSender" class="com.icip.framework.message.impl.WxSenderImpl">
+		<property name="configService" ref="configService"></property>
+	</bean>
+
+	<!-- 语音入口 -->
+	<bean id="voiceSender" class="com.icip.framework.message.impl.VoiceSenderImpl">
+			<property name="configService" ref="configService"></property>
+	</bean>
+	
+</beans>

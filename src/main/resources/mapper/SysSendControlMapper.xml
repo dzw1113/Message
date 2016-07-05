@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.SysSendControlMapper">
+	<resultMap id="SysSendControlMap"
+		type="com.icip.framework.message.bean.SysSendControl">
+		<id column="COMPANY_ID" property="companyId" jdbcType="VARCHAR" />
+		<id column="BMT_TYPE" property="bmtType" jdbcType="CHAR" />
+		<result column="SEND_CYCLE" property="sendCycle" jdbcType="VARCHAR" />
+		<result column="SEND_NUMBER" property="sendNumber" jdbcType="INTEGER" />
+		<result column="BEGIN_TIME" property="beginTime" jdbcType="VARCHAR" />
+		<result column="END_TIME" property="endTime" jdbcType="VARCHAR" />
+		<result column="STATUS" property="status" jdbcType="CHAR" />
+	</resultMap>
+	<sql id="AllColumn">
+		COMPANY_ID, BMT_TYPE, SEND_CYCLE, SEND_NUMBER, BEGIN_TIME,
+		END_TIME, STATUS
+	</sql>
+	<sql id="BaseWhere">
+		<where>
+			<if test="companyId != null">
+				and COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+			</if>
+			<if test="bmtType != null">
+				and BMT_TYPE = #{bmtType,jdbcType=CHAR}
+			</if>
+			<if test="sendCycle != null">
+				and SEND_CYCLE = #{sendCycle,jdbcType=VARCHAR}
+			</if>
+			<if test="sendNumber != null">
+				and SEND_NUMBER = #{sendNumber,jdbcType=INTEGER}
+			</if>
+			<if test="beginTime != null">
+				and BEGIN_TIME = #{beginTime,jdbcType=VARCHAR}
+			</if>
+			<if test="endTime != null">
+				and END_TIME = #{endTime,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null">
+				and STATUS = #{status,jdbcType=CHAR}
+			</if>
+		</where>
+	</sql>
+	<select id="selectByKey" resultMap="SysSendControlMap"
+		parameterType="com.icip.framework.message.bean.SysSendControlKey">
+		select
+		<include refid="AllColumn" />
+		from SYS_SEND_CONTROL
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and BMT_TYPE = #{bmtType,jdbcType=CHAR}
+	</select>
+	<select id="selectAll" resultMap="SysSendControlMap"
+		parameterType="map">
+		select
+		<include refid="AllColumn" />
+		from SYS_SEND_CONTROL
+		<include refid="BaseWhere" />
+	</select>
+	<delete id="delete" parameterType="com.icip.framework.message.bean.SysSendControlKey">
+		delete from SYS_SEND_CONTROL
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and BMT_TYPE =
+		#{bmtType,jdbcType=CHAR}
+	</delete>
+	<insert id="insert" parameterType="com.icip.framework.message.bean.SysSendControl">
+		insert into SYS_SEND_CONTROL
+		(COMPANY_ID, BMT_TYPE, SEND_CYCLE,
+		SEND_NUMBER, BEGIN_TIME, END_TIME,
+		STATUS)
+		values (#{companyId,jdbcType=VARCHAR},
+		#{bmtType,jdbcType=CHAR},
+		#{sendCycle,jdbcType=VARCHAR},
+		#{sendNumber,jdbcType=INTEGER}, #{beginTime,jdbcType=VARCHAR},
+		#{endTime,jdbcType=VARCHAR},
+		#{status,jdbcType=CHAR})
+	</insert>
+	<update id="update" parameterType="com.icip.framework.message.bean.SysSendControl">
+		update SYS_SEND_CONTROL
+		<set>
+			<if test="companyId != null">
+				COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+			</if>
+			<if test="bmtType != null">
+				BMT_TYPE = #{bmtType,jdbcType=CHAR},
+			</if>
+			<if test="sendCycle != null">
+				SEND_CYCLE = #{sendCycle,jdbcType=VARCHAR},
+			</if>
+			<if test="sendNumber != null">
+				SEND_NUMBER = #{sendNumber,jdbcType=INTEGER},
+			</if>
+			<if test="beginTime != null">
+				BEGIN_TIME = #{beginTime,jdbcType=VARCHAR},
+			</if>
+			<if test="endTime != null">
+				END_TIME = #{endTime,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=CHAR},
+			</if>
+		</set>
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and BMT_TYPE =
+		#{bmtType,jdbcType=CHAR}
+	</update>
+
+	<select id="selectRule" resultType="map" parameterType="map">
+		SELECT
+		A.COMPANY_ID,A.MSG_TYPE,B.SEND_CYCLE,B.SEND_NUMBER,B.BEGIN_TIME,B.END_TIME
+		,IFNULL(SUM(A.MSG_COUNT),0) MSG_COUNT
+		FROM SYS_SEND_LOG A RIGHT JOIN
+		SYS_COMPANY_INFO C
+		ON A.COMPANY_ID = C.COMPANY_ID
+		LEFT JOIN
+		SYS_SEND_CONTROL B
+		ON A.COMPANY_ID = B.COMPANY_ID AND A.MSG_TYPE =
+		B.BMT_TYPE
+		WHERE
+		A.SEND_DATE 
+		<![CDATA[   >=  ]]>
+		B.BEGIN_TIME AND A.SEND_DATE 
+		<![CDATA[   <=  ]]>
+		B.END_TIME
+		AND A.COMPANY_ID =
+		#{companyID,jdbcType=VARCHAR}
+		AND
+		B.BMT_TYPE =
+		#{bmtType,jdbcType=VARCHAR}
+		GROUP BY
+		A.COMPANY_ID,A.MSG_TYPE,B.SEND_CYCLE,B.SEND_NUMBER,B.BEGIN_TIME,B.END_TIME
+	</select>
+
+
+
+</mapper>

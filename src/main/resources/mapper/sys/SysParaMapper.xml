@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.icip.framework.common.dao.SysParaDao" >
+
+  <resultMap id="SysParaMap" type="com.icip.framework.common.model.SysPara" >
+    <id column="PARAM_CODE" property="paramCode" jdbcType="VARCHAR" />
+    <result column="PARAM_NAME" property="paramName" jdbcType="VARCHAR" />
+    <result column="PARAM_VALUE" property="paramValue" jdbcType="VARCHAR" />
+    <result column="PARAM_DESC" property="paramDesc" jdbcType="VARCHAR" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="CHAR" />
+  </resultMap>
+  
+  <sql id="AllColumn" >
+    PARAM_CODE, PARAM_NAME, PARAM_VALUE, PARAM_DESC, UPDATE_TIME
+  </sql>
+  
+  <sql id="BaseWhere" >
+    <where >
+      <if test="paramCode != null" >
+         and PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
+      </if>
+      <if test="paramName != null" >
+         and PARAM_NAME = #{paramName,jdbcType=VARCHAR}
+      </if>
+      <if test="paramValue != null" >
+         and PARAM_VALUE = #{paramValue,jdbcType=VARCHAR}
+      </if>
+      <if test="paramDesc != null" >
+         and PARAM_DESC = #{paramDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="updateTime != null" >
+         and UPDATE_TIME = #{updateTime,jdbcType=CHAR}
+      </if>
+    </where>
+  </sql>
+  
+  <select id="selectByKey" resultMap="SysParaMap" parameterType="java.lang.String" >
+    select 
+    <include refid="AllColumn" />
+    from SYS_PARA
+    where PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAll" resultMap="SysParaMap" >
+    select 
+    <include refid="AllColumn" />
+    from SYS_PARA
+    <include refid="BaseWhere" />
+  </select>
+  
+  <delete id="delete" parameterType="java.lang.String" >
+    delete from SYS_PARA
+    where PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
+  </delete>
+  
+  <insert id="insert" parameterType="com.icip.framework.common.model.SysPara" >
+    insert into SYS_PARA (PARAM_CODE, PARAM_NAME, PARAM_VALUE, 
+      PARAM_DESC, UPDATE_TIME)
+    values (#{paramCode,jdbcType=VARCHAR}, #{paramName,jdbcType=VARCHAR}, #{paramValue,jdbcType=VARCHAR}, 
+      #{paramDesc,jdbcType=VARCHAR}, #{updateTime,jdbcType=CHAR})
+  </insert>
+  
+  <update id="update" parameterType="com.icip.framework.common.model.SysPara" >
+    update SYS_PARA
+    <set >
+      <if test="paramCode != null" >
+        PARAM_CODE = #{paramCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramName != null" >
+        PARAM_NAME = #{paramName,jdbcType=VARCHAR},
+      </if>
+      <if test="paramValue != null" >
+        PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDesc != null" >
+        PARAM_DESC = #{paramDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=CHAR},
+      </if>
+    </set>
+    where PARAM_CODE = #{paramCode,jdbcType=VARCHAR}
+  </update>
+  
+</mapper>

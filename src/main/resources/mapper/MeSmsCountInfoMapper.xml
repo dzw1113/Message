@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.MeSmsCountInfoMapper" >
+  <resultMap id="MeSmsCountInfoMap" type="com.icip.framework.message.bean.MeSmsCountInfo" >
+    <id column="PCID" property="pcid" jdbcType="VARCHAR" />
+    <id column="CID" property="cid" jdbcType="VARCHAR" />
+    <id column="BMT_CODE" property="bmtCode" jdbcType="VARBINARY" />
+    <result column="USE_COUNT" property="useCount" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="AllColumn" >
+    PCID, CID, BMT_CODE, USE_COUNT
+  </sql>
+  <sql id="BaseWhere" >
+    <where >
+      <if test="pcid != null" >
+         and PCID = #{pcid,jdbcType=VARCHAR}
+      </if>
+      <if test="cid != null" >
+         and CID = #{cid,jdbcType=VARCHAR}
+      </if>
+      <if test="bmtCode != null" >
+         and BMT_CODE = #{bmtCode,jdbcType=VARBINARY}
+      </if>
+      <if test="useCount != null" >
+         and USE_COUNT = #{useCount,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <update id="update" parameterType="com.icip.framework.message.bean.MeSmsCountInfo" >
+  	INSERT INTO me_sms_count_info(`PCID`,
+             `CID`,
+             `BMT_CODE`,
+             `USE_COUNT`)
+	VALUES(#{pcid,jdbcType=VARCHAR},#{cid,jdbcType=VARCHAR},#{bmtCode,jdbcType=VARBINARY},#{useCount,jdbcType=VARCHAR})
+	ON DUPLICATE KEY UPDATE 
+	USE_COUNT = USE_COUNT + ifnull(#{useCount,jdbcType=VARCHAR},0)
+	
+  </update>
+</mapper>

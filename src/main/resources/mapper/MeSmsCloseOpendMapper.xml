@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.MeSmsCloseOpendMapper" >
+  <resultMap id="MeSmsCloseOpendMap" type="com.icip.framework.message.bean.MeSmsCloseOpend" >
+    <id column="PCID" property="pcid" jdbcType="VARCHAR" />
+    <id column="CID" property="cid" jdbcType="VARCHAR" />
+    <id column="BMT_CODE" property="bmtCode" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="AllColumn" >
+    PCID, CID, BMT_CODE, STATUS
+  </sql>
+  <sql id="BaseWhere" >
+    <where >
+      <if test="pcid != null" >
+         and PCID = #{pcid,jdbcType=VARCHAR}
+      </if>
+      <if test="cid != null" >
+         and CID = #{cid,jdbcType=VARCHAR}
+      </if>
+      <if test="bmtCode != null" >
+         and BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+      </if>
+      <if test="status != null" >
+         and STATUS = #{status,jdbcType=CHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="selectByKey" resultMap="MeSmsCloseOpendMap" parameterType="com.icip.framework.message.bean.MeSmsCloseOpendKey" >
+    select 
+    <include refid="AllColumn" />
+    from me_sms_close_opend
+    where PCID = #{pcid,jdbcType=VARCHAR}
+      and CID = #{cid,jdbcType=VARCHAR}
+      and BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByCompCidInfo" resultType="map" parameterType="map" >
+    	SELECT 
+    	B.PCID,B.CID,A.MOBILE,IFNULL(C.STATUS,2) STATUS,IFNULL(D.USE_COUNT,0) USE_COUNT ,IFNULL(E.CANUSE_COUNT,0) CANUSE_COUNT
+		FROM user_relative A JOIN user_relative_pds B ON A.CUST_NO= B.CUST_NO 
+		JOIN ME_SMS_CLOSE_OPEND C ON B.PCID= C.PCID AND C.CID= B.CID 
+		LEFT JOIN ME_SMS_COUNT_INFO D ON B.PCID= D.PCID AND B.CID= D.CID
+ 		LEFT JOIN me_sms_canuse E ON E.PCID= B.PCID
+  		WHERE A.CUST_NO= B.CUST_NO AND A.MOBILE IS NOT NULL 
+  		    AND c.status= '1'
+			AND A.MOBILE = #{mobile,jdbcType=VARCHAR}
+			AND C.BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+			and B.CID = #{cid,jdbcType=VARCHAR}
+		LIMIT 1
+  </select>
+  
+  <update id="update" parameterType="com.icip.framework.message.bean.MeSmsCloseOpend" >
+    update me_sms_close_opend
+    <set >
+      <if test="pcid != null" >
+        PCID = #{pcid,jdbcType=VARCHAR},
+      </if>
+      <if test="cid != null" >
+        CID = #{cid,jdbcType=VARCHAR},
+      </if>
+      <if test="bmtCode != null" >
+        BMT_CODE = #{bmtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+    </set>
+    where PCID = #{pcid,jdbcType=VARCHAR}
+      and CID = #{cid,jdbcType=VARCHAR}
+      and BMT_CODE = #{bmtCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

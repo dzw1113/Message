@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icip.framework.message.dao.SysSendLogMapper">
+	<resultMap id="SysSendLogMap" type="com.icip.framework.message.bean.SysSendLog">
+		<id column="COMPANY_ID" property="companyId" jdbcType="VARCHAR" />
+		<id column="SEND_DATE" property="sendDate" jdbcType="VARCHAR" />
+		<id column="STATUS" property="status" jdbcType="CHAR" />
+		<id column="MSG_TYPE" property="msgType" jdbcType="VARCHAR" />
+		<result column="BMT_CODE" property="bmtCode" jdbcType="VARCHAR" />
+		<result column="MSG_COUNT" property="msgCount" jdbcType="INTEGER" />
+		<result column="UPDATE_TIME" property="updateTime" jdbcType="VARCHAR" />
+		<result column="SYSTEM_ID" property="systemId" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="AllColumn">
+		COMPANY_ID, SEND_DATE, STATUS, MSG_TYPE, BMT_CODE, MSG_COUNT, UPDATE_TIME
+	</sql>
+	<sql id="BaseWhere">
+		<where>
+			<if test="companyId != null">
+				and COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+			</if>
+			<if test="sendDate != null">
+				and SEND_DATE = #{sendDate,jdbcType=VARCHAR}
+			</if>
+			<if test="status != null">
+				and STATUS = #{status,jdbcType=CHAR}
+			</if>
+			<if test="msgType != null">
+				and MSG_TYPE = #{msgType,jdbcType=VARCHAR}
+			</if>
+			<if test="bmtCode != null">
+				and BMT_CODE = #{bmtCode,jdbcType=INTEGER}
+			</if>
+			<if test="msgCount != null">
+				and MSG_COUNT = #{msgCount,jdbcType=INTEGER}
+			</if>
+			<if test="updateTime != null">
+				and UPDATE_TIME = #{updateTime,jdbcType=VARCHAR}
+			</if>
+			<if test="systemId != null">
+				and SYSTEM_ID = #{systemId,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</sql>
+	<select id="selectByKey" resultMap="SysSendLogMap"
+		parameterType="com.icip.framework.message.bean.SysSendLogKey">
+		select
+		<include refid="AllColumn" />
+		from SYS_SEND_LOG
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and SEND_DATE = #{sendDate,jdbcType=VARCHAR}
+		and STATUS = #{status,jdbcType=CHAR}
+		and MSG_TYPE = #{msgType,jdbcType=VARCHAR}
+	</select>
+	<select id="selectAll" resultMap="SysSendLogMap" parameterType="map">
+		select
+		<include refid="AllColumn" />
+		from SYS_SEND_LOG
+		<include refid="BaseWhere" />
+	</select>
+	<delete id="delete" parameterType="com.icip.framework.message.bean.SysSendLogKey">
+		delete from SYS_SEND_LOG
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and SEND_DATE = #{sendDate,jdbcType=VARCHAR}
+		and STATUS = #{status,jdbcType=CHAR}
+		and MSG_TYPE = #{msgType,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.icip.framework.message.bean.SysSendLog">
+		INSERT INTO SYS_SEND_LOG
+		(COMPANY_ID,BMT_CODE,SEND_DATE,STATUS,MSG_COUNT,MSG_TYPE,UPDATE_TIME,SYSTEM_ID)
+		VALUES (
+		#{companyId,jdbcType=VARCHAR},#{bmtCode,jdbcType=VARCHAR},DATE_FORMAT(NOW(),'%Y%m%d'),
+		#{status,jdbcType=CHAR},#{msgCount,jdbcType=INTEGER},#{msgType,jdbcType=VARCHAR},DATE_FORMAT(NOW(),'%Y%m%d%h%i%s')
+		,#{systemId,jdbcType=VARCHAR})
+		ON DUPLICATE KEY UPDATE MSG_COUNT=MSG_COUNT+#{msgCount,jdbcType=INTEGER};
+	</insert>
+	<update id="update" parameterType="com.icip.framework.message.bean.SysSendLog">
+		update SYS_SEND_LOG
+		<set>
+			<if test="companyId != null">
+				COMPANY_ID = #{companyId,jdbcType=VARCHAR},
+			</if>
+			<if test="sendDate != null">
+				SEND_DATE = #{sendDate,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				STATUS = #{status,jdbcType=CHAR},
+			</if>
+			<if test="msgType != null">
+				MSG_TYPE = #{msgType,jdbcType=VARCHAR},
+			</if>
+			<if test="bmtCode != null">
+				BMT_CODE = #{bmtCode,jdbcType=INTEGER},
+			</if>
+			<if test="msgCount != null">
+				MSG_COUNT = #{msgCount,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				UPDATE_TIME = #{updateTime,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where COMPANY_ID = #{companyId,jdbcType=VARCHAR}
+		and SEND_DATE = #{sendDate,jdbcType=VARCHAR}
+		and STATUS = #{status,jdbcType=CHAR}
+		and MSG_TYPE = #{msgType,jdbcType=VARCHAR}
+	</update>
+</mapper>
